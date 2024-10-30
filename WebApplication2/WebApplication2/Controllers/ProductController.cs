@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using WebApplication2.UnitOfWork;
 
 namespace WebApplication2.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly AppDbContext _context;
