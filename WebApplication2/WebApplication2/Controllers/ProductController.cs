@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using WebApplication2.UnitOfWork;
 
 namespace WebApplication2.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly AppDbContext _context;
@@ -61,9 +63,11 @@ namespace WebApplication2.Controllers
         public async Task<IActionResult> Create([Bind("Id,Name,Price")] Product product)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@Name", product.Name);
-            parameters.Add("@Price", product.Price);
-            _spHelper.ExecuteNonQuery("InsertProduct", parameters);
+            //parameters.Add("@Name", product.Name);
+            //parameters.Add("@Price", product.Price);
+            //_spHelper.ExecuteNonQuery("InsertProduct", parameters);
+            await _unitOfWork.Products.AddAsync(product);
+            await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
