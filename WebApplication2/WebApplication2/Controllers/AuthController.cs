@@ -51,29 +51,29 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(User model)
         {
-            //var user = users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
-            //if (user == null)
-            //{
-            //    return Unauthorized("Invalid credentials.");
-            //}
-
-            //var token = GenerateJwtToken(user);
-            //return Ok(new { Token = token });
-            if (ModelState.IsValid)
+            var user = users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
+            if (user == null)
             {
-                var user = await _userManager.FindByEmailAsync(model.Username);
-                if (user != null)
-                {
-                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-                    if (result.Succeeded)
-                    {
-                        var token = GenerateJwtToken(user);
-                        return Ok(new { Token = token });
-                    }
-                }
-                ModelState.AddModelError("", "Invalid login attempt.");
+                return Unauthorized("Invalid credentials.");
             }
-            return BadRequest(ModelState);
+
+            var token = GenerateJwtToken(user);
+            return Ok(new { Token = token });
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(model.Username);
+        //        if (user != null)
+        //        {
+        //            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+        //            if (result.Succeeded)
+        //            {
+        //                var token = GenerateJwtToken(user);
+        //                return Ok(new { Token = token });
+        //            }
+        //        }
+        //        ModelState.AddModelError("", "Invalid login attempt.");
+        //    }
+        //    return BadRequest(ModelState);
         }
 
         private string GenerateJwtToken(User user)
